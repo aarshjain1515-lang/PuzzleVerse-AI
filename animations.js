@@ -204,14 +204,14 @@ const CanvasEffects = {
 };
 
 /**
- * Ambient background bubble animation manager for the landing page.
+ * Ambient background floating puzzle pieces animation manager for the landing/login pages.
  */
 class BackgroundParticles {
     constructor(canvasElement) {
         this.canvas = canvasElement;
         this.ctx = this.canvas.getContext('2d');
         this.particles = [];
-        this.numParticles = 40;
+        this.numParticles = 25; // slightly fewer for better performance with detailed paths
         this.active = false;
         
         this.resize();
@@ -232,11 +232,13 @@ class BackgroundParticles {
             this.particles.push({
                 x: Math.random() * this.width,
                 y: Math.random() * this.height,
-                radius: Utils.randomRange(1.5, 4.5),
-                vx: Utils.randomRange(-0.3, 0.3),
-                vy: Utils.randomRange(-0.4, -0.1), // slowly float up
-                alpha: Utils.randomRange(0.1, 0.4),
-                hue: Utils.randomChoice([210, 260, 280, 320]) // Blue/Purple/Magenta tones
+                size: Utils.randomRange(25, 60), // large visible puzzle pieces
+                vx: Utils.randomRange(-0.25, 0.25),
+                vy: Utils.randomRange(-0.8, -0.25), // float up at various speeds
+                alpha: Utils.randomRange(0.04, 0.12), // soft, beautiful translucent layers
+                hue: Utils.randomChoice([210, 260, 280, 320]), // cyberpunk cyan/blue/purple hues
+                rotation: Math.random() * Math.PI * 2,
+                spin: Utils.randomRange(-0.008, 0.008) // gentle rotation
             });
         }
     }
@@ -260,21 +262,59 @@ class BackgroundParticles {
         this.particles.forEach(p => {
             p.x += p.vx;
             p.y += p.vy;
+            p.rotation += p.spin;
 
-            // Loop edges
-            if (p.y < -10) {
-                p.y = this.height + 10;
+            // Loop edges with safe margins
+            if (p.y < -80) {
+                p.y = this.height + 80;
                 p.x = Math.random() * this.width;
             }
-            if (p.x < -10 || p.x > this.width + 10) {
+            if (p.x < -80 || p.x > this.width + 80) {
                 p.x = Math.random() * this.width;
             }
 
-            // Draw particle
+            // Draw floating glowing neon puzzle piece shape
+            this.ctx.save();
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate(p.rotation);
+
+            const half = p.size / 2;
+            const tabSize = p.size * 0.22;
+            
             this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = `hsla(${p.hue}, 80%, 75%, ${p.alpha})`;
+            this.ctx.moveTo(-half, -half);
+            
+            // Top: flat
+            this.ctx.lineTo(half, -half);
+            
+            // Right: outward tab
+            this.ctx.lineTo(half, -half + p.size * 0.35);
+            this.ctx.arc(half + tabSize * 0.8, -half + p.size * 0.5, tabSize, -Math.PI / 2, Math.PI / 2, false);
+            this.ctx.lineTo(half, -half + p.size * 0.65);
+            this.ctx.lineTo(half, half);
+            
+            // Bottom: flat
+            this.ctx.lineTo(-half, half);
+            
+            // Left: inward dent
+            this.ctx.lineTo(-half, -half + p.size * 0.65);
+            this.ctx.arc(-half - tabSize * 0.8, -half + p.size * 0.5, tabSize, Math.PI / 2, -Math.PI / 2, true);
+            this.ctx.lineTo(-half, -half + p.size * 0.35);
+            
+            this.ctx.closePath();
+
+            // Render soft glow
+            this.ctx.globalAlpha = p.alpha;
+            this.ctx.fillStyle = `hsla(${p.hue}, 90%, 65%, 0.12)`;
             this.ctx.fill();
+
+            this.ctx.strokeStyle = `hsla(${p.hue}, 100%, 75%, 0.6)`;
+            this.ctx.lineWidth = 1.8;
+            this.ctx.shadowColor = `hsla(${p.hue}, 100%, 75%, 0.5)`;
+            this.ctx.shadowBlur = 10;
+            this.ctx.stroke();
+
+            this.ctx.restore();
         });
 
         requestAnimationFrame(() => this.animate());
