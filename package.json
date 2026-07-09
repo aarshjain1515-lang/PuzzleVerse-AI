@@ -1,0 +1,15 @@
+{
+  "name": "puzzleverse-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Premium, modern jigsaw puzzle web application with custom canvas uploader and procedural sound effects.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.3.3"
+  }
+}
