@@ -313,4 +313,4 @@ const ImageUploader = {
     }
 };
 
-window.ImageCropper = ImageCropper;
+window.ImageUploader = ImageUploader;
