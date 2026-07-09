@@ -280,3 +280,6 @@ class BackgroundParticles {
         requestAnimationFrame(() => this.animate());
     }
 }
+
+window.CanvasEffects = CanvasEffects;
+window.BackgroundParticles = BackgroundParticles;

@@ -231,3 +231,5 @@ const Utils = {
         }, duration);
     }
 };
+
+window.Utils = Utils;

@@ -309,3 +309,5 @@ const Storage = {
 
 // Initialize Storage
 Storage.init();
+
+window.Storage = Storage;

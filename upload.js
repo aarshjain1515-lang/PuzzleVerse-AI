@@ -312,3 +312,5 @@ const ImageUploader = {
         document.getElementById('upload-section').classList.remove('hidden');
     }
 };
+
+window.ImageCropper = ImageCropper;

@@ -378,3 +378,5 @@ const AudioManager = {
         }
     }
 };
+
+window.AudioManager = AudioManager;

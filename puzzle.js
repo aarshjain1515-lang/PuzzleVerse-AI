@@ -1357,3 +1357,5 @@ class PuzzleGame {
         Utils.showToast("Screenshot downloaded!");
     }
 }
+
+window.PuzzleGame = PuzzleGame;
